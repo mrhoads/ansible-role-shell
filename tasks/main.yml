@@ -1,0 +1,31 @@
+---
+# tasks file for mrhoads.shell
+
+
+- name: Install standard packages
+  package:
+    name:
+      - git
+      - zsh
+    state: present
+  become: true
+
+- name: Configure zsh
+  copy:
+    src: default.zshrc
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+
+- name: Set ZSH as Default Shell
+  user:
+    name: "{{ ansible_env.USER }}"
+    shell: /usr/bin/zsh
+  become: true
+
+- name: Get Oh My Zsh installer
+  get_url:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: "{{ ansible_env.HOME }}"
+    mode: 0755
+  
+- name: Run Oh My ZSH Installer
+  command: "{{ ansible_env.HOME }}/install.sh"
